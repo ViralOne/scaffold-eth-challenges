@@ -19,7 +19,6 @@ contract Vendor is Ownable {
   // ToDo: create a payable buyTokens() function:
   function buyTokens() external payable{
     uint256 amountOfTokensToBuy = msg.value  * tokensPerEth;
-    require(yourToken.balanceOf(msg.sender) < amountOfTokensToBuy, "Vendor doesn't have enough tokens");
     yourToken.transfer(msg.sender, amountOfTokensToBuy);
     emit BuyTokens(msg.sender, msg.value, amountOfTokensToBuy);
   }
