@@ -19,21 +19,22 @@ contract Vendor is Ownable {
   // ToDo: create a payable buyTokens() function:
   function buyTokens() external payable{
     uint256 amountOfTokensToBuy = msg.value  * tokensPerEth;
-    require(yourToken.balanceOf(msg.sender) < amountOfTokensToBuy, "Vendor doesn't have enough tokens");
     yourToken.transfer(msg.sender, amountOfTokensToBuy);
     emit BuyTokens(msg.sender, msg.value, amountOfTokensToBuy);
   }
 
   // ToDo: create a withdraw() function that lets the owner withdraw ETH
    function withdraw() external onlyOwner{
-    uint256 amountOfETH = yourToken.balanceOf(msg.sender) / tokensPerEth;
-    yourToken.transfer(msg.sender, amountOfETH);
+    (bool success, ) = msg.sender.call{value: address(this).balance/2}("");
+    require(success, 'Unable to withdraw');
    }
 
   // ToDo: create a sellTokens() function:
   function sellTokens(uint256 tokensToSell) external{
     require(yourToken.balanceOf(msg.sender) >= tokensToSell, "You don't have enough tokens to sell");
     yourToken.transferFrom(msg.sender, address(this), tokensToSell);
+    (bool success, ) = msg.sender.call{value: tokensToSell/tokensPerEth}("");
+    require(success, 'Unable to sell');
   }
 
 }
